@@ -163,3 +163,5 @@ function phila_custom_columns_content($column_name, $post_id){
 
 			//manage_$post_posts_custom_column
 add_action( 'manage_phila_news_posts_custom_column', 'phila_custom_columns_content', 10, 2 );//still not sure about 10, but the 2 is number of args being passed to this function
+
+include('inc/widget-news-list.php');
