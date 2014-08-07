@@ -37,16 +37,13 @@ function phila_create_post_type() {
 	$args = array(
 		'labels' => $labels,
 		'description' => 'News Items for the City of Philadelphia',
-		'rewrite' => array('slug' => 'news'),
+		'rewrite' => array('slug' => 'news', 'with_front'=>false),
 		'public' => true,
-		'has_archive' => true,
 		'menu_position' => 20,
-		'menu_icon' => 'dashicons-rss',
-		//'capability_type' => 'news', not sure about these
-		//'capabilities' => '',
+		'menu_icon' => 'dashicons-media-document',
 		'supports' => $supports,
 		'taxonomies' => array('category','post_tag'), //TO DO - add audience once I know it's good
-		'has_archive'=> 'true'
+		'has_archive'=> 'news'
 			//TO DO see if we need to change slug type
   );	
 	register_post_type( 'phila_news', $args );	
@@ -56,11 +53,11 @@ function phila_create_post_type() {
 function phila_add_news_info_metabox(){
 	add_meta_box(
 		'phila-news-info-metabox',
-		__('News Info', 'phila'),
+		__('News Item Start & End Dates', 'phila'),
 		'phila_render_news_info_metabox',//callback
 		'phila_news',//post_type
 		'side',
-		'core'
+		'high'
 	);
 }
 
@@ -74,6 +71,8 @@ function phila_render_news_info_metabox( $post ) {
     // get previously saved meta values (if any)
     $news_start_date = get_post_meta( $post->ID, 'news-start-date', true );
     $news_end_date = get_post_meta( $post->ID, 'news-end-date', true );
+	$news_no_expire = get_post_meta($post->ID, 'news-no-expire', true);
+	
  
     // if there is previously saved value then retrieve it, else set it to the current time
     $news_start_date = ! empty( $news_start_date ) ? $news_start_date : time();
@@ -82,11 +81,17 @@ function phila_render_news_info_metabox( $post ) {
     $news_end_date = ! empty( $news_end_date ) ? $news_end_date : $news_start_date;
  
     ?>
+<p>
 	<label for="phila-news-start-date"><?php _e( 'News Item Start Date:', 'uep' ); ?></label>
 			<input class="widefat phila-news-date-input" id="phila-news-start-date" type="text" name="phila-news-start-date" placeholder="Format: February 18, 2014" value="<?php echo date( 'F d, Y', $news_start_date ); ?>" />
-
+</p>
+<p>
 	<label for="phila-news-end-date"><?php _e( 'News Item End Date:', 'uep' ); ?></label>
 			<input class="widefat phila-news-date-input" id="phila-news-end-date" type="text" name="phila-news-end-date" placeholder="Format: February 18, 2014" value="<?php echo date( 'F d, Y', $news_end_date ); ?>" />
+	</p>
+<p>
+	<input type="checkbox" name="phila-news-no-expire" <?php if( $news_no_expire == true ) { ?>checked="checked"<?php } ?> id="phila-news-no-expire"> <label for="phila-news-no-expire"><?php _e( 'story does not expire (stays at top of list).', 'uep' ); ?></label>
+	</p>
   
 <?php }//end phila_render_news_info_metabox
 
@@ -104,13 +109,28 @@ function phila_admin_script_style($hook){
 		);
 	}
 }
+
+function phila_widget_style() {
+    if ( is_active_widget( '', '', 'phila_news_list', true ) ) {
+        wp_enqueue_style(
+            'news_list',
+            STYLES . 'style.css',
+            false,
+            '1.0',
+            'all'
+        );
+    }
+}
+add_action( 'wp_enqueue_scripts', 'phila_widget_style' );
+
 add_action('admin_enqueue_scripts','phila_admin_script_style');
 
 function phila_save_news_info( $post_id ) {
-	if (isset($_POST['post_type'])) {
-		'phila_news' != $_POST['post_type'];
+	if (isset($_POST['post_type'])) { 
+		if('phila_news' != $_POST['post_type']){
 		return;
 	}
+}
 	//check for save status
 	$is_autosave = wp_is_post_autosave($post_id);
 	$is_revision = wp_is_post_revision($post_id);
@@ -132,6 +152,10 @@ function phila_save_news_info( $post_id ) {
     if ( isset( $_POST['phila-news-end-date'] ) ) {
         update_post_meta( $post_id, 'news-end-date', strtotime( $_POST['phila-news-end-date'] ) );
     }
+	 if ( isset( $_POST['phila-news-no-expire'] ) ) {
+        update_post_meta( $post_id, 'news-no-expire', $_POST['phila-news-end-date']);
+    }
+	
  
 }
 add_action( 'save_post', 'phila_save_news_info' );
@@ -156,7 +180,7 @@ function phila_custom_columns_content($column_name, $post_id){
 	}
 	if('news_end_date' == $column_name ){
         $end_date = get_post_meta( $post_id, 'news-end-date', true );
-        echo date( 'F d, Y', $end_date );
+        echo date('F d, Y', $end_date);
     }
 
 }
@@ -164,4 +188,46 @@ function phila_custom_columns_content($column_name, $post_id){
 			//manage_$post_posts_custom_column
 add_action( 'manage_phila_news_posts_custom_column', 'phila_custom_columns_content', 10, 2 );//still not sure about 10, but the 2 is number of args being passed to this function
 
+/* Filter the single_template with our custom function*/
+function get_custom_post_type_template($single_template) {
+     global $post;
+
+     if ($post->post_type == 'phila_news') {
+          $single_template = dirname( __FILE__ ) . '/single-phila_news.php';
+     }
+     return $single_template;
+}
+add_filter( 'single_template', 'get_custom_post_type_template' );
+
 include('inc/widget-news-list.php');
+
+
+
+
+
+
+//OTHER WAY TO ADD CUSTOM META BOXES
+
+add_filter( 'rwmb_meta_boxes', 'phila_register_meta_boxes' );
+function phila_register_meta_boxes( $meta_boxes ){
+    $prefix = 'phila_';
+
+    // 2nd meta box
+    $meta_boxes[] = array(
+		'id'       => $prefix . 'news-link',
+        'title'    => 'News Link URL',
+        'pages'    => array( 'phila_news' ),
+        'fields' => array(
+            array(
+				'desc'  => 'Paste the external URL of the News Item here.',
+                'id'   => $prefix . 'url',
+                'type' => 'text',
+				'std'   => 'http://',
+            ),
+        )
+    );
+	
+    return $meta_boxes;
+	
+}
+

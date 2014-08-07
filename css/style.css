@@ -1,0 +1,21 @@
+.phila_news_entry{
+    margin-bottom: 21px;
+}
+ 
+.phila_news_entry h4{
+    margin-bottom: 3px;
+}
+ 
+.phila_news_entry h4 a{
+    text-decoration: none;
+    color: inherit;
+}
+  
+.phila_news_entry p{
+    margin-bottom: 3px !important;
+}
+ 
+.phila_news_entry .phila_news_date{
+    font-size: 0.9em;
+    color: #777777;
+}
