@@ -151,9 +151,11 @@ function phila_save_news_info( $post_id ) {
     if ( isset( $_POST['phila-news-end-date'] ) ) {
         update_post_meta( $post_id, 'news-end-date', strtotime( $_POST['phila-news-end-date'] ) );
     }
-	 if ( isset( $_POST['phila-news-no-expire'] ) ) {
-        update_post_meta( $post_id, 'news-no-expire', $_POST['phila-news-end-date']);
-    }
+	if ( $_POST['phila-news-no-expire'] ) {
+        update_post_meta( $post_id, 'news-no-expire', $_POST['phila-news-no-expire']);
+    }else{
+	 delete_post_meta($post_id, 'news-no-expire');
+	 }
 	
  
 }
@@ -235,7 +237,7 @@ function phila_register_meta_boxes( $meta_boxes ){
 				'desc'  => 'Paste the external URL of the News Item here.',
                 'id'   => $prefix . 'url',
                 'type' => 'text',
-				'std'   => 'http://',
+				'placeholder'   => 'http://',
             ),
         )
     );

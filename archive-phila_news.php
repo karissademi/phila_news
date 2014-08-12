@@ -12,13 +12,28 @@
 					
 					<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 					
+					<?php 
+						//look for URL and output this instead of the full news story
+						$url = get_post_meta($post->ID, 'phila_url', true );
+						if (strpos($url, 'http://') !==false) : ?>
+						<article id="post-<?php the_ID(); ?>" <?php post_class('clearfix'); ?> role="article">
+							<p><a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"><?php echo the_title() ?> (link)</a></p>
+						</article>
+					
+					<?php else : ?>
+
 					<article id="post-<?php the_ID(); ?>" <?php post_class('clearfix'); ?> role="article">
 						<?php the_post_thumbnail( 'wpbs-featured' ); ?>
 						<header>
-							
 							<h3 class="h2"><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h3>
 							<p class="meta"><?php the_category(', '); ?> - <time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time>  
-							</p>
+						<?php /*
+							<p><?php echo 'start:' . date("m.d.y", get_post_meta($post->ID, 'news-start-date', true )); ?></p>
+							<p><?php echo 'end:' . date("m.d.y", get_post_meta($post->ID, 'news-end-date', true )); ?></p>
+							<p><?php echo 'no expire:' .  get_post_meta($post->ID, 'news-no-expire', true ); ?></p>
+						
+							*/?>
+								
 						</header> <!-- end article header -->
 					
 						<section class="post_content">
@@ -32,8 +47,9 @@
 						</footer> <!-- end article footer -->
 					
 					</article> <!-- end article -->
+					<?php endif; //end the display bits?>
 					
-					<?php endwhile; ?>	
+					<?php endwhile; //ends the loop?>
 					
 					<?php if (function_exists('page_navi')) { // if expirimental feature is active ?>
 						

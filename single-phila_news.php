@@ -18,7 +18,7 @@
 					
 						<section class="post_content clearfix" itemprop="articleBody">
 							<?php the_content(); ?>
-							i know this works
+		
 							<?php wp_link_pages(); ?>
 					
 						</section> <!-- end article section -->
