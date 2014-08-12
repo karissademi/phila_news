@@ -25,7 +25,7 @@ class Phila_News_List extends WP_Widget {
 		
 		?>
 		<div>
-							<?php //this method belongs to the WP_Widget class // _e for translation  ?>
+							<?php //$this method belongs to the WP_Widget class // _e for translation  ?>
 			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'uep' ); ?></label>
     <input type="text" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" class="widefat" value="<?php echo esc_attr( $instance['title'] ); ?>">
 		</div>
@@ -33,7 +33,7 @@ class Phila_News_List extends WP_Widget {
 			<label for="<?php echo $this->get_field_id( 'number_items' ); ?>"><?php _e( 'Number of news items to show:' ); ?></label>
 			<select id="<?php echo $this->get_field_id( 'number_items' ); ?>" name="<?php echo $this->get_field_name( 'number_items' ); ?>" class="widefat">
 				<?php for ( $i = 1; $i <= 10; $i++ ): ?>
-															<?php //compares $i amd $instance[number_items] ?>
+															<?php //compares $i and $instance[number_items] ?>
 				<option value="<?php echo $i; ?>" <?php selected( $i, $instance['number_items'], true ); ?>><?php echo $i; ?></option>
 
 				<?php endfor; ?>

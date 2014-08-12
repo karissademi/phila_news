@@ -37,14 +37,13 @@ function phila_create_post_type() {
 	$args = array(
 		'labels' => $labels,
 		'description' => 'News Items for the City of Philadelphia',
-		'rewrite' => array('slug' => 'news', 'with_front'=>false),
+		'rewrite' => array('slug' => 'news', 'with_front'=>true),
 		'public' => true,
 		'menu_position' => 20,
 		'menu_icon' => 'dashicons-media-document',
 		'supports' => $supports,
 		'taxonomies' => array('category','post_tag'), //TO DO - add audience once I know it's good
 		'has_archive'=> 'news'
-			//TO DO see if we need to change slug type
   );	
 	register_post_type( 'phila_news', $args );	
 }
@@ -199,6 +198,20 @@ function get_custom_post_type_template($single_template) {
 }
 add_filter( 'single_template', 'get_custom_post_type_template' );
 
+//filter the archive page
+function get_custom_post_type_archive_template($archive_template) {
+     global $post;
+
+     if ($post->post_type == 'phila_news') {
+          $archive_template = dirname( __FILE__ ) . '/archive-phila_news.php';
+     }
+     return $archive_template;
+}
+add_filter( 'archive_template', 'get_custom_post_type_archive_template' );
+
+
+
+
 include('inc/widget-news-list.php');
 
 
@@ -206,7 +219,7 @@ include('inc/widget-news-list.php');
 
 
 
-//OTHER WAY TO ADD CUSTOM META BOXES
+//OTHER WAY TO ADD CUSTOM META BOXES DWBI
 
 add_filter( 'rwmb_meta_boxes', 'phila_register_meta_boxes' );
 function phila_register_meta_boxes( $meta_boxes ){
