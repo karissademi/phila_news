@@ -17,7 +17,16 @@
 						$url = get_post_meta($post->ID, 'phila_url', true );
 						if (strpos($url, 'http://') !==false) : ?>
 						<article id="post-<?php the_ID(); ?>" <?php post_class('clearfix'); ?> role="article">
-							<p><a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"><?php echo the_title() ?> (link)</a></p>
+						<h3 class="h2"><a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"><?php echo the_title() ?> (link)							</a></h3>						
+							<p class="meta">
+								<?php the_category(', '); ?> - 
+								<time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time>
+							</p>
+						
+						<?php if ($post->post_excerpt) {
+							?><section class="post_excerpt"><?php the_excerpt(); ?></section>
+						<?php } ?>
+						
 						</article>
 					
 					<?php else : ?>
@@ -26,7 +35,7 @@
 						<?php the_post_thumbnail( 'wpbs-featured' ); ?>
 						<header>
 							<h3 class="h2"><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h3>
-							<p class="meta"><?php the_category(', '); ?> - <time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time>  
+							<p class="meta"><?php the_category(', '); ?> - <time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time>  </p>
 						<?php /*
 							<p><?php echo 'start:' . date("m.d.y", get_post_meta($post->ID, 'news-start-date', true )); ?></p>
 							<p><?php echo 'end:' . date("m.d.y", get_post_meta($post->ID, 'news-end-date', true )); ?></p>
@@ -36,7 +45,7 @@
 								
 						</header> <!-- end article header -->
 					
-						<section class="post_content">
+						<section class="post_excerpt">
 
 							<?php the_excerpt(); ?>
 					
@@ -82,7 +91,41 @@
 			
 				</div> <!-- end #main -->
     			
-				<?php get_sidebar(); // change to menu! ?>
+				
+				<?php 
+/*
+					function seoUrl($string) {
+						//Lower case everything
+						$string = strtolower($string);
+						//Convert whitespaces and underscore to dash
+						$string = preg_replace("/[\s_]/", "-", $string);
+						return $string;
+					}
+
+					$args = array( 'hide_empty=0' );
+
+					$terms = get_terms('topics', $args);
+					if ( !empty( $terms ) && !is_wp_error( $terms ) ) {
+						$count = count($terms);
+						$i=0;
+						$term_list = '<p class="my_term-archive">';
+						foreach ($terms as $term) {
+							$i++;
+							$term_list .= '<a href="?topics=' . seoUrl($term->name) . '" title="' . sprintf(__('View all post filed under %s', 'phila'), $term->name) . '">' . $term->name . '</a>';
+							if ($count != $i) {
+								$term_list .= ' &middot; ';
+							}
+							else {
+								$term_list .= '</p>';
+							}
+						}
+						echo $term_list;
+					}
+				 */
+				?>
+				<?php get_sidebar(); ?>
+				
+				
     
 			</div> <!-- end something? -->
         </div><!-- end #content -->
