@@ -18,19 +18,16 @@
 						<?php } ?>						
 					</div>
 					
-					
-					
 					<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
-				
-						
-					
+	
 					<?php 
 						//look for URL and output this instead of the full news story
 						$url = get_post_meta($post->ID, 'phila_url', true );
 						if (strpos($url, 'http://') !==false) : ?>
 						<article id="post-<?php the_ID(); ?>" <?php post_class('clearfix row'); ?> role="article">
-						<h3><a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"><?php echo the_title() ?> (link)							</a></h3>						
+						<h3><a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"><?php echo the_title() ?> (link)							<span class="glyphicon glyphicon-send"></span></a></h3>						
 							<p class="meta">
+								<span class="glyphicon glyphicon-calendar"></span>
 								<time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time> | 
 								<?php the_category(', '); ?> 
 								<?php $terms = wp_get_post_terms( $post->ID, array( 'topics' ) ); ?>
@@ -40,7 +37,11 @@
 							</p>
 						
 						<?php if ($post->post_excerpt) {
-							?><section class="post_excerpt"><?php the_excerpt(); ?></section>
+							?><section class="post_excerpt"><?php the_excerpt(); ?>
+								<a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"> 
+									<button class="btn btn-default">Visit Website</button> 
+								</a>
+							</section>
 						<?php } ?>
 						
 						</article>
@@ -59,7 +60,9 @@
 										
 						<header>
 							<h3><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h3>
-							<p class="meta"><time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time> | <?php the_category(', '); ?> 				
+							<p class="meta">
+								<span class="glyphicon glyphicon-calendar"></span>
+								<time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time> | <?php the_category(', '); ?> 				
 									<?php $terms = wp_get_post_terms( $post->ID, array( 'topics' ) ); ?>
 									<?php foreach ( $terms as $term ) : ?>
 									<?php echo ' | ' . $term->name; ?> 
@@ -73,11 +76,16 @@
 								
 						</header> <!-- end article header -->
 					
-						<section class="post_excerpt">
+						<?php if ($post->post_excerpt) {
+							?><section class="post_excerpt"><?php the_excerpt(); ?>
+								<a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"> 
+									<button class="btn btn-default">Read More</button> 
+								</a>
+							</section>
+						<?php } ?>
+							
 
-							<?php the_excerpt(); ?>
-
-						</section> <!-- end article section -->
+	
 						</div><!-- end col  -->
 						<footer>
 							
