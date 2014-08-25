@@ -25,26 +25,29 @@
 						$url = get_post_meta($post->ID, 'phila_url', true );
 						if (strpos($url, 'http://') !==false) : ?>
 						<article id="post-<?php the_ID(); ?>" <?php post_class('clearfix row'); ?> role="article">
-						<h3><a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"><?php echo the_title() ?> (link)							<span class="glyphicon glyphicon-send"></span></a></h3>						
-							<p class="meta">
-								<span class="glyphicon glyphicon-calendar"></span>
-								<time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time> | 
-								<?php the_category(', '); ?> 
-								<?php $terms = wp_get_post_terms( $post->ID, array( 'topics' ) ); ?>
-									<?php foreach ( $terms as $term ) : ?>
-									<?php echo ' | ' . $term->name; ?> 
-									<?php endforeach; ?>
-							</p>
-						
-						<?php if ($post->post_excerpt) {
-							?><section class="post_excerpt"><?php the_excerpt(); ?>
-								<a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"> 
-									<button class="btn btn-default">Visit Website</button> 
-								</a>
-							</section>
-						<?php } ?>
-						
+							<div class="col-sm-24">
+								<h3><a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"><?php echo the_title() ?> (link)							<span class="glyphicon glyphicon-link"></span></a></h3>						
+									<p class="meta">
+										<span class="glyphicon glyphicon-calendar"></span>
+										<time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time> | 
+										<?php the_category(', '); ?> 
+										<?php $terms = wp_get_post_terms( $post->ID, array( 'topics' ) ); ?>
+											<?php foreach ( $terms as $term ) : ?>
+											<?php echo ' | ' . $term->name; ?> 
+											<?php endforeach; ?>
+									</p>
+
+								<?php if ($post->post_excerpt) {
+									?><section class="post_excerpt">
+									<p><?php the_excerpt_max_charlength(140);?></p>
+										<a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"> 
+											<button class="btn btn-primary">Visit Website</button> 
+										</a>
+									</section>
+								<?php } ?>
+						</div>
 						</article>
+					<hr>
 					
 					<?php else : ?>
 
@@ -76,13 +79,14 @@
 								
 						</header> <!-- end article header -->
 					
-						<?php if ($post->post_excerpt) {
-							?><section class="post_excerpt"><?php the_excerpt(); ?>
+						<?php //if ($post->post_excerpt) {
+							?><section class="post_excerpt">
+								<p><?php the_excerpt_max_charlength(140);?></p>
 								<a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"> 
-									<button class="btn btn-default">Read More</button> 
+									<button class="btn btn-primary">Read More</button> 
 								</a>
 							</section>
-						<?php } ?>
+						<?php// } ?>
 							
 
 	
@@ -92,6 +96,7 @@
 						</footer> <!-- end article footer -->
 					
 					</article> <!-- end article -->
+						<hr>
 					<?php endif; //end the display bits?>
 					
 					<?php endwhile; //ends the loop?>
@@ -127,7 +132,7 @@
 			
 				</div> <!-- end #main -->
     		
-				<?php get_sidebar(); ?>
+				<?php dynamic_sidebar('phila_news_sidebar'); ?>
 				
 				
     
