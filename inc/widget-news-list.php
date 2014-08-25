@@ -25,7 +25,7 @@ class Phila_News_List extends WP_Widget {
 		
 		?>
 		<div>
-							<?php //$this method belongs to the WP_Widget class // _e for translation  ?>
+							<?php //$this method belongs to the WP_Widget class   ?>
 			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'uep' ); ?></label>
     <input type="text" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" class="widefat" value="<?php echo esc_attr( $instance['title'] ); ?>">
 		</div>
@@ -54,26 +54,28 @@ class Phila_News_List extends WP_Widget {
 	public function widget($args, $instance){
 		extract($args);
 		$title = apply_filters('widget_title', $instance['title']);
-		
-		$meta_query_args = array(
-			'relation'		=> 'AND',
-			array(
-				'key'		=> 'news-end-date',
-				'value'		=> time(),//current time stamp
-				'compare'	=> '>='//greater than or equal to
-			)
-		);
 		$query_args = array(
 			'post_type'			=> 'phila_news',
 			'posts_per_page'	=> $instance['number_items'],
 			'post_status'		=> 'publish',
 			'ignore_sticky_posts'	=> 'true',
-			'meta_key'			=> 'news-end-date',
+			'meta_key'			=> 'news-start-date',
 			'orderby'			=> 'meta_value_num', //need _num to compare values instad of strings
-			'order'				=> 'DESC'
+			'order'				=> 'DESC',
+			//this is to make the posts dissappear after they the 'end' date has passed
+			'meta_query'		=> 
+				array(
+				'relation'		=> 'AND',
+					array(
+						'key'		=> 'news-end-date',
+						'value'		=> time(),//current time stamp
+						'compare'	=> '>'//greater than 
+					)
+			),//end meta_query
 		);
 		
 		$news_list = new WP_Query($query_args);
+		
 		
 		echo $before_widget;
 		if('title'){
@@ -84,29 +86,32 @@ class Phila_News_List extends WP_Widget {
 			?>
 			<ul class="phila_news_entries">
 				<?php	
-					while($news_list->have_posts() ) : $news_list ->the_post();
-					$news_start_date = get_post_meta( get_the_ID(), 'news-start-date', true);
-					$news_end_date = get_post_meta(get_the_ID(), 'news-end-date', true);
+					while($news_list->have_posts()) : $news_list ->the_post();
+						$news_start_date = get_post_meta( get_the_ID(), 'news-start-date', true);
+						$news_end_date = get_post_meta(get_the_ID(), 'news-end-date', true);
+						$news_no_expire = get_post_meta(get_the_ID(), 'news-no-expire', true);
 			?>
-			<li class="phila_news_entry">
-				<time class="phila_news_date"><?php echo date( 'F d, Y', $news_start_date ); ?> 
-					<?php //echo date( 'F d, Y', $news_end_date ); ?>
-				</time>
-				<h4><a href="<?php the_permalink(); ?>" class="phila_news_title"><?php the_title(); ?></a></h4>
-				<?php the_excerpt(); ?>
 			
-			</li>
+				<li class="phila_news_entry">
+					<time class="phila_news_date"><?php echo date( 'F d, Y', $news_start_date ); ?>
+						<br> is post sticky? <?php echo $news_no_expire ?>
+					</time>
+					<a href="<?php the_permalink(); ?>" class="phila_news_title"><h4 class="h5"><?php the_title(); ?></h4></a>
+					<?php the_excerpt(); ?>
+				</li>
 			<?php endwhile; ?>
 		</ul>
 		<a href="<?php echo get_post_type_archive_link('phila_news');?>">View all news</a>
 
 		<?php
 		wp_reset_query();
+			
 		echo $after_widget;
-
-
+			
 		}else{
-			?><p>There is no recent news!</p><?php
+			?><p>There is no recent news!</p>
+			<a href="<?php echo get_post_type_archive_link('phila_news');?>">View past news</a>
+<?php
 		}
 	}
 }

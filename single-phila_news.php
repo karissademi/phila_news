@@ -2,8 +2,10 @@
 			
 			<div id="content" class="clearfix row">
 			
-				<div id="main" class="col-sm-16 clearfix" role="main">
-
+				<div id="main" class="col-sm-18 clearfix" role="main">
+					<div class="breadcrumbs">
+						<?php if(function_exists('bcn_display')){bcn_display();}?>
+					</div>
 					<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 					
 					<article id="post-<?php the_ID(); ?>" <?php post_class('clearfix'); ?> role="article" itemscope itemtype="http://schema.org/BlogPosting">

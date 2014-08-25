@@ -1,26 +1,42 @@
 <?php get_header(); ?>
+
 			
 			<div id="content" class="clearfix row">
-			
-				<div id="main" class="col-sm-16 clearfix archive" role="main">
+			<div class="breadcrumbs">
+						<?php if(function_exists('bcn_display')){bcn_display();}?>
+					</div>
+				<div id="main" class="col-sm-18 clearfix archive" role="main">
 					<div class="page-header">
 						<?php
 							if (is_post_type_archive('phila_news')) { ?>
-								<h1><?php post_type_archive_title(); ?></h1>
+								<h1><?php post_type_archive_title(); ?> 
+									<?php /*$term = get_term_by( 'slug', 
+															  //search for this
+															  get_query_var('term'), 'topics'
+															 ); echo $term->name; */?>
+						</h1>
 						<?php } ?>						
 					</div>
 					
+					
+					
 					<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
+				
+						
 					
 					<?php 
 						//look for URL and output this instead of the full news story
 						$url = get_post_meta($post->ID, 'phila_url', true );
 						if (strpos($url, 'http://') !==false) : ?>
-						<article id="post-<?php the_ID(); ?>" <?php post_class('clearfix'); ?> role="article">
-						<h3 class="h2"><a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"><?php echo the_title() ?> (link)							</a></h3>						
+						<article id="post-<?php the_ID(); ?>" <?php post_class('clearfix row'); ?> role="article">
+						<h3><a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"><?php echo the_title() ?> (link)							</a></h3>						
 							<p class="meta">
-								<?php the_category(', '); ?> - 
-								<time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time>
+								<time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time> | 
+								<?php the_category(', '); ?> 
+								<?php $terms = wp_get_post_terms( $post->ID, array( 'topics' ) ); ?>
+									<?php foreach ( $terms as $term ) : ?>
+									<?php echo ' | ' . $term->name; ?> 
+									<?php endforeach; ?>
 							</p>
 						
 						<?php if ($post->post_excerpt) {
@@ -31,11 +47,23 @@
 					
 					<?php else : ?>
 
-					<article id="post-<?php the_ID(); ?>" <?php post_class('clearfix'); ?> role="article">
-						<?php the_post_thumbnail( 'wpbs-featured' ); ?>
+					<article id="post-<?php the_ID(); ?>" <?php post_class('clearfix row'); ?> role="article">
+						<?php if ('' != get_the_post_thumbnail()){ ?>
+							<div class="col-md-10">
+								<?php the_post_thumbnail( 'wpbs-featured' ); ?>
+							</div>
+							<div class="col-md-12">
+						<?php } else {?>
+							<div class="col-md-24">
+						<?php } ?>
+										
 						<header>
-							<h3 class="h2"><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h3>
-							<p class="meta"><?php the_category(', '); ?> - <time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time>  </p>
+							<h3><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h3>
+							<p class="meta"><time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time> | <?php the_category(', '); ?> 				
+									<?php $terms = wp_get_post_terms( $post->ID, array( 'topics' ) ); ?>
+									<?php foreach ( $terms as $term ) : ?>
+									<?php echo ' | ' . $term->name; ?> 
+									<?php endforeach; ?>
 						<?php /*
 							<p><?php echo 'start:' . date("m.d.y", get_post_meta($post->ID, 'news-start-date', true )); ?></p>
 							<p><?php echo 'end:' . date("m.d.y", get_post_meta($post->ID, 'news-end-date', true )); ?></p>
@@ -48,9 +76,9 @@
 						<section class="post_excerpt">
 
 							<?php the_excerpt(); ?>
-					
+
 						</section> <!-- end article section -->
-						
+						</div><!-- end col  -->
 						<footer>
 							
 						</footer> <!-- end article footer -->
@@ -90,39 +118,7 @@
 					<?php endif; ?>
 			
 				</div> <!-- end #main -->
-    			
-				
-				<?php 
-/*
-					function seoUrl($string) {
-						//Lower case everything
-						$string = strtolower($string);
-						//Convert whitespaces and underscore to dash
-						$string = preg_replace("/[\s_]/", "-", $string);
-						return $string;
-					}
-
-					$args = array( 'hide_empty=0' );
-
-					$terms = get_terms('topics', $args);
-					if ( !empty( $terms ) && !is_wp_error( $terms ) ) {
-						$count = count($terms);
-						$i=0;
-						$term_list = '<p class="my_term-archive">';
-						foreach ($terms as $term) {
-							$i++;
-							$term_list .= '<a href="?topics=' . seoUrl($term->name) . '" title="' . sprintf(__('View all post filed under %s', 'phila'), $term->name) . '">' . $term->name . '</a>';
-							if ($count != $i) {
-								$term_list .= ' &middot; ';
-							}
-							else {
-								$term_list .= '</p>';
-							}
-						}
-						echo $term_list;
-					}
-				 */
-				?>
+    		
 				<?php get_sidebar(); ?>
 				
 				

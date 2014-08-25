@@ -154,7 +154,7 @@ function phila_save_news_info( $post_id ) {
 	if ( $_POST['phila-news-no-expire'] ) {
         update_post_meta( $post_id, 'news-no-expire', $_POST['phila-news-no-expire']);
     }else{
-	 delete_post_meta($post_id, 'news-no-expire');
+		delete_post_meta($post_id, 'news-no-expire');
 	 }
 	
  
@@ -162,6 +162,7 @@ function phila_save_news_info( $post_id ) {
 add_action( 'save_post', 'phila_save_news_info' );
 
 //now make wordpress do our bidding
+
 function phila_custom_columns_head($defaults){
 	unset($defaults['date']);
 	
@@ -185,9 +186,37 @@ function phila_custom_columns_content($column_name, $post_id){
     }
 
 }
-
 			//manage_$post_posts_custom_column
-add_action( 'manage_phila_news_posts_custom_column', 'phila_custom_columns_content', 10, 2 );//still not sure about 10, but the 2 is number of args being passed to this function
+add_action( 'manage_phila_news_posts_custom_column', 'phila_custom_columns_content', 10, 2 );
+
+//create the sortable-ness
+/*
+//columns not sorting correctly, can't fix so removing
+function phila_custom_columns_sortable($columns){
+	
+	$columns['news_end_date'] = 'news-end-date';
+	
+	return $columns;
+}
+		  //manage_edit-$post_columns
+add_filter('manage_edit-phila_news_sortable_columns', 'phila_custom_columns_sortable', 10);
+
+//tell wordpress how to sort
+function phila_news_column_orderby($vars){
+	
+	if (isset($vars['orderby']) && 'end-date' == $vars['orderby']){
+		   
+		$vars = array_merge($vars, array(
+			   'meta_key' => 'end-date',
+			   'orderby' => 'meta_value_num',
+				)
+			);
+	}
+	return $vars;
+}
+
+add_filter('request', 'phila_news_column_orderby');
+*/
 
 /* Filter the single_template with our custom function*/
 function get_custom_post_type_template($single_template) {
