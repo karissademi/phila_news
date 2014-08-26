@@ -10,10 +10,12 @@
 						<?php
 							if (is_post_type_archive('phila_news')) { ?>
 								<h1><?php post_type_archive_title(); ?> 
-									<?php /*$term = get_term_by( 'slug', 
+									<?php $term = get_term_by( 'slug', 
 															  //search for this
-															  get_query_var('term'), 'topics'
-															 ); echo $term->name; */?>
+															  get_query_var('term'), 'topics'); 
+								if (isset($term->name)) {
+									echo '| ' .$term->name; 
+								}?>
 						</h1>
 						<?php } ?>						
 					</div>
@@ -39,7 +41,7 @@
 
 								<?php if ($post->post_excerpt) {
 									?><section class="post_excerpt">
-									<p><?php the_excerpt_max_charlength(140);?></p>
+									<p><?php the_excerpt_max_charlength(160);?></p>
 										<a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"> 
 											<button class="btn btn-primary">Visit Website</button> 
 										</a>
@@ -81,8 +83,8 @@
 					
 						<?php //if ($post->post_excerpt) {
 							?><section class="post_excerpt">
-								<p><?php the_excerpt_max_charlength(140);?></p>
-								<a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"> 
+								<p><?php the_excerpt_max_charlength(160);?></p>
+								<a href="<?php the_permalink() ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"> 
 									<button class="btn btn-primary">Read More</button> 
 								</a>
 							</section>
