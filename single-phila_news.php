@@ -4,7 +4,9 @@
 			
 				<div id="main" class="col-sm-18 clearfix" role="main">
 					<div class="breadcrumbs">
-						<?php if(function_exists('bcn_display')){bcn_display();}?>
+					<?php if ( function_exists('yoast_breadcrumb') ) {
+						yoast_breadcrumb('<p id="breadcrumbs">','</p>');
+					} ?>
 					</div>
 					<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 					
@@ -12,15 +14,24 @@
 						
 						<header>
 						
-							<?php the_post_thumbnail( 'wpbs-featured' ); ?>
+							<?php the_post_thumbnail( 'wpbs-featured', array('class'=>'img-responsive') ); ?>
 							
 							<div class="page-header"><h1 class="single-title" itemprop="headline"><?php the_title(); ?></h1></div>
 						
 						</header> <!-- end article header -->
 					
 						<section class="post_content clearfix" itemprop="articleBody">
-							<?php the_content(); ?>
-		
+						<?php $url = get_post_meta($post->ID, 'phila_url', true );
+						if (strpos($url, 'http://') !==false) : ?>
+							
+							<?php echo the_excerpt();?>
+							<a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"> 
+								<button class="btn btn-primary">Visit Website</button> 
+							</a>
+							
+							<?php else : ?>
+								<?php the_content(); ?>
+							<?php endif; //end the display bits?>
 							<?php wp_link_pages(); ?>
 					
 						</section> <!-- end article section -->

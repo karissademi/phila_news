@@ -3,8 +3,10 @@
 			
 			<div id="content" class="clearfix row">
 			<div class="breadcrumbs">
-						<?php if(function_exists('bcn_display')){bcn_display();}?>
-					</div>
+				<?php if ( function_exists('yoast_breadcrumb') ) {
+				yoast_breadcrumb('<p id="breadcrumbs">','</p>');
+				} ?>
+			</div>
 				<div id="main" class="col-sm-18 clearfix archive" role="main">
 					<div class="page-header">
 						<?php
@@ -33,15 +35,19 @@
 										<span class="glyphicon glyphicon-calendar"></span>
 										<time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time> | 
 										<?php the_category(', '); ?> 
-										<?php $terms = wp_get_post_terms( $post->ID, array( 'topics' ) ); ?>
-											<?php foreach ( $terms as $term ) : ?>
-											<?php echo ' | ' . $term->name; ?> 
-											<?php endforeach; ?>
 									</p>
-
+								</p>
 								<?php if ($post->post_excerpt) {
 									?><section class="post_excerpt">
 									<p><?php the_excerpt_max_charlength(160);?></p>
+							<p class="meta"> Topics:
+							<?php $terms = wp_get_post_terms( $post->ID, array( 'topics' ) ); $results = array();?>
+							<?php foreach ( $terms as $term ) : ?>
+							<?php $results[] = '<a href="' . get_site_url() . '/news/?topics=' . $term->slug . '" title="' . sprintf(__('View all post filed under %s', 'phila'), $term->name) . '">' . $term->name . '</a>' ; 
+							 endforeach; 
+							$result = implode(" | ",$results);
+							echo $result; ?>
+						</p>
 										<a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"> 
 											<button class="btn btn-primary">Visit Website</button> 
 										</a>
@@ -67,11 +73,8 @@
 							<h3><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a></h3>
 							<p class="meta">
 								<span class="glyphicon glyphicon-calendar"></span>
-								<time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time> | <?php the_category(', '); ?> 				
-									<?php $terms = wp_get_post_terms( $post->ID, array( 'topics' ) ); ?>
-									<?php foreach ( $terms as $term ) : ?>
-									<?php echo ' | ' . $term->name; ?> 
-									<?php endforeach; ?>
+								<time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time> | 									<?php the_category(', '); ?> 				
+
 						<?php /*
 							<p><?php echo 'start:' . date("m.d.y", get_post_meta($post->ID, 'news-start-date', true )); ?></p>
 							<p><?php echo 'end:' . date("m.d.y", get_post_meta($post->ID, 'news-end-date', true )); ?></p>
@@ -80,18 +83,25 @@
 							*/?>
 								
 						</header> <!-- end article header -->
-					
+												
 						<?php //if ($post->post_excerpt) {
 							?><section class="post_excerpt">
 								<p><?php the_excerpt_max_charlength(160);?></p>
-								<a href="<?php the_permalink() ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"> 
-									<button class="btn btn-primary">Read More</button> 
-								</a>
+						
+							<p class="meta"> Topics:
+							<?php $terms = wp_get_post_terms( $post->ID, array( 'topics' ) ); $results = array();?>
+							<?php foreach ( $terms as $term ) : ?>
+							<?php $results[] = '<a href="' . get_site_url() . '/news/?topics=' . $term->slug . '" title="' . sprintf(__('View all post filed under %s', 'phila'), $term->name) . '">' . $term->name . '</a>' ; 
+							 endforeach; 
+							$result = implode(" | ",$results);
+							echo $result; ?>
+						</p>
+						<a href="<?php the_permalink() ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"> 
+							<button class="btn btn-primary">Read More</button> 
+						</a>
 							</section>
 						<?php// } ?>
-							
 
-	
 						</div><!-- end col  -->
 						<footer>
 							
