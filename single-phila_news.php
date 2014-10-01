@@ -1,7 +1,6 @@
 <?php get_header(); ?>
-			
-			<div id="content" class="clearfix row">
-				<header class="fluid-container page-title">
+</div> <!-- end header.php container --> 
+			<header class="fluid-container page-title">
 				<div class="container">
 						<?php
 							if (is_post_type_archive('phila_news')) { ?>
@@ -21,7 +20,10 @@
 					</div>
 				</div>
 				</header>
-				<div id="main" class="col-sm-18 clearfix" role="main">
+			
+	<div class="container marg-top">
+			<div id="content" class="clearfix row">
+				<div id="main" class="col-sm-18 clearfix archive" role="main">
 				
 					<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 					
