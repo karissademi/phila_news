@@ -1,25 +1,34 @@
 <?php get_header(); ?>
 			
 			<div id="content" class="clearfix row">
-			
-				<div id="main" class="col-sm-18 clearfix" role="main">
+				<header class="fluid-container page-title">
+				<div class="container">
+						<?php
+							if (is_post_type_archive('phila_news')) { ?>
+								<h1 class="page-header"><?php post_type_archive_title(); ?> 
+									<?php $term = get_term_by( 'slug', 
+															  //search for this
+															  get_query_var('term'), 'topics'); 
+								if (isset($term->name)) {
+									echo '| ' .$term->name; 
+								}?>
+						</h1>
+						<?php } ?>						
 					<div class="breadcrumbs">
-					<?php if ( function_exists('yoast_breadcrumb') ) {
+						<?php if ( function_exists('yoast_breadcrumb') ) {
 						yoast_breadcrumb('<p id="breadcrumbs">','</p>');
-					} ?>
+						} ?>
 					</div>
+				</div>
+				</header>
+				<div id="main" class="col-sm-18 clearfix" role="main">
+				
 					<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 					
 					<article id="post-<?php the_ID(); ?>" <?php post_class('clearfix'); ?> role="article" itemscope itemtype="http://schema.org/BlogPosting">
-						
-						<header>
-						
-							<?php the_post_thumbnail( 'wpbs-featured', array('class'=>'img-responsive') ); ?>
-							
-							<div class="page-header"><h1 class="single-title" itemprop="headline"><?php the_title(); ?></h1></div>
-						
-						</header> <!-- end article header -->
 					
+							<?php the_post_thumbnail( 'wpbs-featured', array('class'=>'img-responsive') ); ?>
+
 						<section class="post_content clearfix" itemprop="articleBody">
 						<?php $url = get_post_meta($post->ID, 'phila_url', true );
 						if (strpos($url, 'http://') !==false) : ?>
@@ -71,8 +80,10 @@
 					<?php endif; ?>
 			
 				</div> <!-- end #main -->
-    
+				
+				
 				<?php dynamic_sidebar('phila_news_sidebar'); // sidebar 1 ?>
+				
     
 			</div> <!-- end something? -->
         </div><!-- end #content -->

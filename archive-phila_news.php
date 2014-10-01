@@ -1,17 +1,11 @@
 <?php get_header(); ?>
-
-			
-			<div id="content" class="clearfix row">
-			<div class="breadcrumbs">
-				<?php if ( function_exists('yoast_breadcrumb') ) {
-				yoast_breadcrumb('<p id="breadcrumbs">','</p>');
-				} ?>
-			</div>
-				<div id="main" class="col-sm-18 clearfix archive" role="main">
-					<div class="page-header">
+	
+</div> <!-- end header.php container --> 
+			<header class="fluid-container page-title">
+				<div class="container">
 						<?php
 							if (is_post_type_archive('phila_news')) { ?>
-								<h1><?php post_type_archive_title(); ?> 
+								<h1 class="page-header"><?php post_type_archive_title(); ?> 
 									<?php $term = get_term_by( 'slug', 
 															  //search for this
 															  get_query_var('term'), 'topics'); 
@@ -20,12 +14,21 @@
 								}?>
 						</h1>
 						<?php } ?>						
+					<div class="breadcrumbs">
+						<?php if ( function_exists('yoast_breadcrumb') ) {
+						yoast_breadcrumb('<p id="breadcrumbs">','</p>');
+						} ?>
 					</div>
+				</div>
+				</header>
+		<div class="container marg-top">
+			<div id="content" class="clearfix row">
+				<div id="main" class="col-sm-18 clearfix archive" role="main">
 					
 					<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 	
 					<?php 
-						//look for URL and output this instead of the full news story
+						//look for URL and output The link to a website instead of the full news story
 						$url = get_post_meta($post->ID, 'phila_url', true );
 						if (strpos($url, 'http://') !==false) : ?>
 						<article id="post-<?php the_ID(); ?>" <?php post_class('clearfix row'); ?> role="article">
@@ -33,8 +36,7 @@
 								<h3><a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"><?php echo the_title() ?> (link)							<span class="glyphicon glyphicon-link"></span></a></h3>						
 									<p class="meta">
 										<span class="glyphicon glyphicon-calendar"></span>
-										<time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time> | 
-										<?php the_category(', '); ?> 
+										<time datetime="<?php echo get_the_date(); ?>" pubdate><?php echo get_the_date(); ?></time> | <?php the_category(', '); ?> 
 									</p>
 								</p>
 								<?php if ($post->post_excerpt) {
@@ -48,23 +50,21 @@
 							$result = implode(" | ",$results);
 							echo $result; ?>
 						</p>
-										<a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>"> 
-											<button class="btn btn-primary">Visit Website</button> 
-										</a>
-									</section>
+							<a href="<?php echo get_post_meta($post->ID, 'phila_url', true ) ?>" class="btn btn-primary"> Visit Website</a>
+								</section>
 								<?php } ?>
 						</div>
 						</article>
 					<hr>
 					
-					<?php else : ?>
+					<?php else : //otherwise, show a regular news story?>
 
 					<article id="post-<?php the_ID(); ?>" <?php post_class('clearfix row'); ?> role="article">
 						<?php if ('' != get_the_post_thumbnail()){ ?>
-							<div class="col-md-10">
-								<?php the_post_thumbnail( 'wpbs-featured' ); ?>
+							<div class="col-md-8">
+								<?php the_post_thumbnail('phila-standard-thumb'); ?>
 							</div>
-							<div class="col-md-12">
+							<div class="col-md-14">
 						<?php } else {?>
 							<div class="col-md-24">
 						<?php } ?>
@@ -96,9 +96,7 @@
 							$result = implode(" | ",$results);
 							echo $result; ?>
 						</p>
-						<a href="<?php the_permalink() ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"> 
-							<button class="btn btn-primary">Read More</button> 
-						</a>
+						<a href="<?php the_permalink() ?>" rel="bookmark" title="<?php the_title_attribute(); ?>" class="btn btn-primary">Read More</a>
 							</section>
 						<?php// } ?>
 
